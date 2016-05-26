@@ -3,3 +3,5 @@ tags
 cxmanage.egg-info
 .project
 .pydevproject
+build/*
+dist/*
