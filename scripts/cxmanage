@@ -64,11 +64,14 @@ PARSER_EPILOG = """examples:
   cxmanage power on 192.168.1.1,192.168.1.2     # comma-separated hosts
   cxmanage info 192.168.1.1-192.168.1.5         # IP range (5 hosts)
   cxmanage -a sensor temp 192.168.1.1           # all nodes on a fabric
-  cxmanage -a fwupdate package ECX-1000_update.tar.gz 192.168.1.1"""
+  cxmanage -a config reset                  # reset all nodes to factory default
+  cxmanage -a fwupdate package ECX-1000_update.tar.gz 192.168.1.1  
+                                            # firmware update to all nodes"""
+
 
 FWUPDATE_EPILOG = """examples:
-  cxmanage -a fwupdate package ECX-1000_update.tar.gz 192.168.1.1
-  cxmanage -a fwupdate --full package ECX-1000_update.tar.gz 192.168.1.1"""
+  cxmanage -a fwupdate package ECX-1000_update.tar.gz 192.168.1.1         # firmware update to all nodes
+  cxmanage -a fwupdate --full package ECX-1000_update.tar.gz 192.168.1.1  # firmware update to all nodes and reset"""
 
 FWUPDATE_IMAGE_TYPES = ['PACKAGE'] + sorted([
     'DEL',
