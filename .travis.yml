@@ -1,0 +1,49 @@
+language: python
+python:
+- '2.7'
+install:
+- python setup.py bdist
+- pip install .
+script: run_tests
+before_deploy:
+- git config --global user.email "builds@travis-ci.com"
+- git config --global user.name "Travis CI"
+- export GIT_TAG=`python -c 'import cxmanage_api.__init__; print cxmanage_api.__init__.__version__'`
+- export GIT_TAG=v$GIT_TAG.$TRAVIS_BRANCH.Build$TRAVIS_BUILD_NUMBER
+- echo $GIT_TAG
+- git tag $GIT_TAG -f -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+- git push -f https://$GITPERM@github.com/SLS-Dev/cxmanage --tags
+- export RELEASE_FILE=$(ls dist/*.tar.gz)
+- echo "deploying $RELEASE_FILE to Github releases"
+notifications:
+  slack:
+    secure: kJShCNMzboCvKYNAXU0hLjq487yYHoUBLdaNdhyFwt5qdA92ZhCJ+SePThVGFyy000y0ChjHSW9lwDce3vP/9O+WY7CD6qsjufLcm1UITe8osDegOtuc2xhNG9LUwv7EhZUtOoUS/zlCh5xNnIy1EbAY3fDWzlg2xQTijANf/IY8TNiwaHGH3x6wiC8ysDAT76oYto7u7DddR8wCDBvT0Ublhvh/01ZGRZcloHDpM6twMlOqveFChxZIibJinbEi72z1xMhyw59GBWUey31hD/etDNjBlzn23N/XuYvpW04zZoDoEdnf3Wx5LZf3c0G7AiKkynX6lZIYBK785VHNv3XeGx5/Jqxov1GZA1Gfo853P/hOLpMJcdpMNCMjyBm8jdAUPwwWYAZmpPaNMgkPljXXchvmd5BO9PDh3QCt5KeFXCMesD0/ZH/FkPLFaierbem8xN8pnjshdiVPOVhs4Znth+lvtBKUbJetztUSGL3NKm9mPIphs2Bn4x5YY2YL9XjgML9kT2zS3qWP8iEpwYXGfm1QH7Gj9Wx6YBD7Io/l675/Vg46zwSlJcNJGCcvBeD/BEKni1x23T659oVGTIFN3+pwXhvz9+FLPj+mwQ1lmpU147K3BHOLR69pJMJQ6tMFOXMy64JTXNkZ6ngn8fHYdVr+xHEzdOH6kw2t4lE=
+
+deploy:
+  - provider: releases
+    api_key:
+      secure: R9FLRkDEMy5I+P2tBgTzKGsqiwJ7woDMwTqHrssUAl3pbHX6BdLyjBqtviQptzOO6meMIvzHJoIxy0ZfUQGC8jQFBdfgm6J1/tipd0c5PByMF38OMj5knLSMnsQYMduGOgTbaGdbi6CrdqCMpWQ+ZZp1Zq4bP+rqmp0iBc/AnO6USm2HSZeuUSC9mGR4A5YRYMmFKZ1DxdDg7gvLgYd4NeOder0krpw+UGeFnWwEvVNUTIdX0OU7lJdf0xElerMCX/aB5wPY+n/tKYbIp8pjzBx3729EwaM6JP4CrI6GxB8THbX/AYCA04v36QhBqMNwGraODUhG6ew2U1q7toMW7DtQDCxdQgGQ5eq6X3DjoSsNkwvkRjaPBD+cAQUXOkxKaDslEyGKjHhIESdIv7GMbyMSVuoyNS4f4UiDZH3q9XFK6rDSjyBRl8aJGHlDOUeuqmJ/Yy3mcJLeqbUT71MEhq0WVcmi6nOBHa7SwvHExBAXWAX+LJ6IROALTQRdUplNpU7Da8gJwYIE8cvJL/XgrFG59lqVgFMmR32wPTsy7HNqMKTZxrN0lEdkNkT5zCi/I4aFc9biIOzVEMAHPfuX9XTLQ3ORlIZE7H22x9W4NL6njdPqlVRqpzdTQABTleC7M4eu4SMZNufvQ2CELTOEWck/u8uzwrn3hO0doTKABWs=
+    skip_cleanup: true
+    file_glob: true
+    file: "$RELEASE_FILE"
+    on:
+      tags: false
+      all_branches: true
+  - provider: pypi
+    user: sls.jarvis
+    server: https://testpypi.python.org/pypi
+    password:
+      secure: I537bpeyLueiQnRUa/ewzsXolZLFXMNaaZ5kE9WhEhfFLbCpsMc0E5+79RhzTCFOoTdaq0BJ2WBM7Kgc6w34RZDWvyQwb6smi2mI9BMGVxipm2rHTkpeJpHsfUlib2HvbGHAukFyNl36GLw9A6v+AKEgPPzicgL/QQVOZEF8BolLBz0f2U8hpg/xzHSox7ib05hyrL2HQD6uBerOBdBoFRYCC4O+B+Tqw7boldrbg49EG/3t8ia+uCGPR9mAVZKOpfM6/6VJyf/FCBFBA7Wnc4D4+eRnuN16qltqsecnYVXKSu3CGc/c42s5YxSlfCBgpr+aqsk+HjUQDq8UhqQpYN9epvsPw3t/AtEP+XpQVUh4BHViiZONZGgjXvy++tBVbTncXO3FwK62Wd7mDBNJMSkCcWgkP0a83fmirGR1lVMqmvYHrsIOTJfAr4AkcuOcdrrXYX0Im2YMIPFa+KeLeZksqL+6Z0XdGJEIi47aw+edU7GI4pue4o+poxCJNinOpf7gm9Ypp1dwzfPCg9+vkcbiioLIlHArAUeL6/8KYvQ/Y1rmvxEDFImlwngnmGE/gD52G64+T29X6bGk+8OjsfO3u7uyI/NZeiJOAKddVsqsYIc28AqCUL9k8meUB2eIXp49buMs6pvxNmpr4YnhSwfoQdisX8Frm7EsTWooaUo=
+    skip_cleanup: true
+    file_glob: true
+    file: "$RELEASE_FILE"
+    on:
+      tags: false
+      branch: master
+
+branches:
+  except:
+  - "/^v[0-9]/"
+env:
+  global:
+    secure: PV+C9uOEl547fWH7Jtq4/mc5BHJU3WxiY5nGRPRxJBCg9sEiAlF8si4ub9+Y0f/+f7ppMzQc1TFCQ+1kCUcygeqgcVgcaqNy1WugaTs840eCWaQJSYK8ky7TKOJmHFilvfwdN0O3Keg22fkyvFIn5j7BvjxSbRaOcncl88OD1Rwb57o6U92xZN97/XBJ0u+WIGtLXL3NlpwxpaqGZc88PwNLhgu3EgWClHEscPqQcfBpfhvIE3bOUQFya3YgYsvtrKheE7cOfl/ZtOEp6xeX6fkG0mmLAIEeikFF75ZBfyaP50EOAvrP4IBM5gMYfO0+CGzx0yOoKkxwtecODPOZDIJoglLNetkT4WWDXvVBNszIHGA2yasjgty1cBo18qS9i8f9ZfV4BmqQH0HUx6Ku2qRGnH+nAYJ9hzn0IHWC27547bTx9fWgxVdYg32HEXvoddfYRoQKkvzhj+dI1Dwt7T9JTDkV7cwnjzKaWYQEKv1LHmMHP12+Fu8/sa9lTtvnF/HDgOvv6BUBHr1172c3n+t8GNscOB4jZrUvrxTWPwPrInvgaKzEeY7tmwQcbYaxYioA+l7rKyhc5Z0qQQzS15yU5kFaLRpthBb7u4eIqdau31XqbdZiL4Vjgrm5emdxmYLMIUQQu3r3M2jca/aC9HQNUkKABqxLw4xAZiZS9Lo=
