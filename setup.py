@@ -36,7 +36,9 @@ from setuptools import setup
 import os
 
 travis_build = os.environ.get('TRAVIS_BUILD_NUMBER')
-if travis_build is None:
+travis_bench = os.environ.get('TRAVIS_BRANCH')
+
+if (travis_build is None) or (travis_bench == "master"):
     travis_build = ''
 else:
     travis_build = ".dev" + travis_build
@@ -60,6 +62,8 @@ setup(
     ],
     scripts=['scripts/cxmanage', 'scripts/sol_tabs', 'scripts/cxmux', 'run_tests'],
     description='Calxeda Management Utility',
+    author = 'george.kraft, Jason.Hobbs, sls.jarvis, SLS-BrianKe',
+    author_email = 'pkg-admin@silverlining-systems.com',
     # NOTE: As of right now, the pyipmi version requirement needs to be updated
     # at the top of scripts/cxmanage as well.
     install_requires=[
