@@ -1,0 +1,48 @@
+language: python
+python:
+- '2.7'
+install:
+- python setup.py bdist
+- pip install .
+script: run_tests
+before_deploy:
+- git config --global user.email "builds@travis-ci.com"
+- git config --global user.name "Travis CI"
+- export GIT_TAG=`python -c 'import cxmanage_api.__init__; print cxmanage_api.__init__.__version__'`
+- export GIT_TAG=v$GIT_TAG.$TRAVIS_BRANCH.Build$TRAVIS_BUILD_NUMBER
+- echo $GIT_TAG
+- git tag $GIT_TAG -f -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+- git push -f https://$GITPERM@github.com/SLS-Dev/cxmanage --tags
+- export RELEASE_FILE=$(ls dist/*.tar.gz)
+- echo "deploying $RELEASE_FILE to Github releases"
+notifications:
+  slack:
+    secure: pB6z62Vn0yVkRkG54sRG9UFSiQYvItEf+H1txuiKQr1TpY4mKwpJYC1U37sj2VH46ahLQ7sYatKX8lMql5OnARwB7to5XrTncPKAGW0F0ynhX15QfpE7unAl9iK5tGo4EoEzjyXy27zYQVWFFAlSC4gMhxh1Z4sr4gjR2WbLZcbpmANwB5syg2k/g0xRzE75DJkNQqJUkLsfE2aaqzxppEktPL661gV9OPwE91fMwVDTMPVvGI2MhvmjaTJ8HntQmxBAe3DqJJbb5nPcAtxvnFl3yyUYNUf1VVkhMG35R3nVoEfsEbL2Wx6ZC/k1sukJ9whOVAEPCF953aa5HUAlZ30094Pq9Mr5IfzUGkr1o/oJmN37tbyPBl/bVmoKeGkThxQxtSFCw+JG41zQYN6J98EgUmYX10inNtUKH3rn0O68PFlAmqiG0JrE7kT48ZSYbWf5Z/3XBYhY9B1/6FgCj3VLSAj/yqIVi/uOkaGQ5EXY2nMhxx4GJwoxKCyr9bBUX7FEKNGf5Ju8UWCtoEMTX6UgnsS1Ck+f0vg9er1bixeQFTDKlApooMTa/YS9WQpVLn2wNLLv/nasOMoxQ6/nGTWzF6GdDcqo0LQWpVbTneBJlIQl2A4Ex5trsgyFvbC8oFAyMTGuuykS8uBs1Fk1BMdY1iTm0DlTOsMny+QSgRI=
+deploy:
+- provider: releases
+  api_key:
+    secure: MyVQM/5ECuDunTmxOvtFQ44KQC9TUcSpjSQi+BUiZVJyt+s+80cWzEyXUui7meHkevcUmvCahRA6TwRhdgHIK6BEtsPfVGt4MRQtLf292FQW6o1u0gxOO1KT/RFvnz/UlprXILn+wVIq9caMEHniilTktNPoFuzsaMmqILmiZnYmtU8wbxWRvpb3vgDK1WAl2c5kpCjHcO6GCrzWM7sR7cOgVrBLXlQd48c6YxZMXvNyIgM5NIpegAaEkIqLhiudbRCzOMd3U8SIdNns28vz3ygYj1v6kZcIzLUU38kcVcqaMpjpcFYn1VVUs191d3YaBHDArgKBzm08KZ9HO8iwhcDH+xyU+j+Y8qk710mYfP6AoZdShhpYl3ARORd+eX4N59mCSgpGu144A1EPPtHCe4I8cSeqk7yom5GYyKAXJlbCFPBoOpNFKMSnbAotu7He1ZiLNnCq+lY5Nn1ia6lxMsM0lbehFcFWfjVDrLxmjmtULFsXjJ18BUNpZxyp5Og4CJNIw/HZA5gQTSYXz7Q7A57kCChIVxsp6GX0aYF6SXHeToXx/1YmRmUDktmeh3DwCnRwZEtGFun52RXwCb7bgaAW0cb55Rz+FhOx79oB6F0iGcPI+CIHgNynQOmlxvMLonDuhprjc5ateiieqqedqJpu5ayaUcTL2dPhPe7OGLQ=
+  skip_cleanup: true
+  file_glob: true
+  file: "$RELEASE_FILE"
+  on:
+    tags: false
+    all_branches: true
+- provider: pypi
+  user: sls.jarvis
+  server: https://testpypi.python.org/pypi
+  password:
+    secure: I537bpeyLueiQnRUa/ewzsXolZLFXMNaaZ5kE9WhEhfFLbCpsMc0E5+79RhzTCFOoTdaq0BJ2WBM7Kgc6w34RZDWvyQwb6smi2mI9BMGVxipm2rHTkpeJpHsfUlib2HvbGHAukFyNl36GLw9A6v+AKEgPPzicgL/QQVOZEF8BolLBz0f2U8hpg/xzHSox7ib05hyrL2HQD6uBerOBdBoFRYCC4O+B+Tqw7boldrbg49EG/3t8ia+uCGPR9mAVZKOpfM6/6VJyf/FCBFBA7Wnc4D4+eRnuN16qltqsecnYVXKSu3CGc/c42s5YxSlfCBgpr+aqsk+HjUQDq8UhqQpYN9epvsPw3t/AtEP+XpQVUh4BHViiZONZGgjXvy++tBVbTncXO3FwK62Wd7mDBNJMSkCcWgkP0a83fmirGR1lVMqmvYHrsIOTJfAr4AkcuOcdrrXYX0Im2YMIPFa+KeLeZksqL+6Z0XdGJEIi47aw+edU7GI4pue4o+poxCJNinOpf7gm9Ypp1dwzfPCg9+vkcbiioLIlHArAUeL6/8KYvQ/Y1rmvxEDFImlwngnmGE/gD52G64+T29X6bGk+8OjsfO3u7uyI/NZeiJOAKddVsqsYIc28AqCUL9k8meUB2eIXp49buMs6pvxNmpr4YnhSwfoQdisX8Frm7EsTWooaUo=
+  skip_cleanup: true
+  file_glob: true
+  file: "$RELEASE_FILE"
+  on:
+    tags: false
+    branch: master
+branches:
+  except:
+  - "/^v[0-9]/"
+env:
+  global:
+  - secure: qEGdjADcBLjPoz3NeJqq8WMEVcyceLx5CRuR2DU/3Z4c0iz5aRfd7BTfA5la0Vo91NOBg4v6q+hv/gUgw528uuxDs7UmwzpObVhU3xVnWUPTtkho1y80YfQGcQ4KkNMQEolFMcHIAC34sO7WZLPixHqinQK70B1prwzZ9dCkW42hXOBci+te3v/olkeUDVWvC8nBeUlujjsT8bvxpBg9PtsjJ9Lh+ey5F5lGDggYf3f+YrDC/jK+qIAvOJ0ghpvW4Mem8GkdQQ6J9rEZuqm4H2a8xMbAMq9+389QS4Kjt2T3E7fxDyL+5lbhiIYHOrTu46XCXM9qwvf9wE+/xjVmNl2cHqXulABq9wKVwEuUrINkeuAVuPpJ2DM9UsX1Aovxc8jbwZzqQk9F/Byyq+4ZJL1jAiuezGaN7kyYmI6e1qTJjhET0I7lLzilGfg2n+rooZo5ZD6q9j/6Lu3P0mR8xV+stbpVTUv4z9h4z7KiGIsAAefDL6MuyT/upfSnGP6WVsGwbtKv1/CySz2T+0Ovx43ffJ3yLLf2pqbNC/It8qOV8sdtUys9rZWedspCWFURroH5hrHCausnuiYSfWZdKv6PU0pWnqnHAsPz2qIPypIjmgltv/VUFJ/SL0Jef4QIHqctZ80Z0zVgQeDGQyKvBBWqqU8TyJWEoYEXKdtnCQk=
+  - secure: fQ2iN3hTZbEiuffUP9ENLzyrgsfjZfLEzuJ2gn05gVOmISkGHcaZyWwnUqdwptIZ/j3sJGQozb6Y4Gc1Z1RYJAdiA+V5M/9uM1ayrlrhTYtROEo0bk2CFtr+uvXC8NGfutuefuBgq3u2UPyM1Ti+IhAzNdDMvip2jpLpfd0qX0/5KpRKfjcuTdiFCuhqVMS9ZTlYXRXw7w8jDMDlDaKD69nQaYguNLSLe/Gceii2oGQjNB38Uq0ty0NuGAecU3+1cLU90/Uw/GileY8AY6d2b/aiNcy83ntPveBxly+hhz1xDoUtWRVNjHv55rNP7pFBdnFxgphOe+XvSIgTPlBvuDOokdlkdw8wwrXiLDgseLiZS2UMzCmAUUrIVwegr/nDHyojJigFaYH/rD5+ZOSpA2WqtTqjFHwwo3wtMc2JF302iilUsT4mjTc6P9RDzcMY29IBiaDranKrhtsvE9HdGbsnjWSMDWr1RxTcXXRfpoZFeak1FErfmK5NQAKUiugEkTBxEMjvAKH8pC7JQUg66W6TlXkpLG+TGn7SRPVA/s3kjno+9BXXVWvGqdMOGpV0oKzJPzYpyk3eTDb/3PYPyPmz3joBKgmHg5ly7RPtqnD8oG1tC2IUO5i5yTYyEiPh/HTAue2zLRr9LO86TzhNS5rsfq6iRFWTlpxk6D8jQ9I=
