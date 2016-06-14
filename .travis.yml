@@ -9,7 +9,7 @@ before_deploy:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
 - export GIT_TAG=`python -c 'import cxmanage_api.__init__; print cxmanage_api.__init__.__version__'`
-- export GIT_TAG=v$GIT_TAG.$TRAVIS_BRANCH.Build$TRAVIS_BUILD_NUMBER
+- if [ "$TRAVIS_BRANCH" == "master" ]; then export GIT_TAG=v$GIT_TAG ; else export GIT_TAG=v$GIT_TAG.$TRAVIS_BRANCH.Build$TRAVIS_BUILD_NUMBER ; fi
 - echo $GIT_TAG
 - git tag $GIT_TAG -f -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
 - git push -f https://$GITPERM@github.com/SLS-Dev/cxmanage --tags
@@ -31,7 +31,7 @@ deploy:
 - provider: pypi
   user: sls.jarvis
   password:
-    secure: I537bpeyLueiQnRUa/ewzsXolZLFXMNaaZ5kE9WhEhfFLbCpsMc0E5+79RhzTCFOoTdaq0BJ2WBM7Kgc6w34RZDWvyQwb6smi2mI9BMGVxipm2rHTkpeJpHsfUlib2HvbGHAukFyNl36GLw9A6v+AKEgPPzicgL/QQVOZEF8BolLBz0f2U8hpg/xzHSox7ib05hyrL2HQD6uBerOBdBoFRYCC4O+B+Tqw7boldrbg49EG/3t8ia+uCGPR9mAVZKOpfM6/6VJyf/FCBFBA7Wnc4D4+eRnuN16qltqsecnYVXKSu3CGc/c42s5YxSlfCBgpr+aqsk+HjUQDq8UhqQpYN9epvsPw3t/AtEP+XpQVUh4BHViiZONZGgjXvy++tBVbTncXO3FwK62Wd7mDBNJMSkCcWgkP0a83fmirGR1lVMqmvYHrsIOTJfAr4AkcuOcdrrXYX0Im2YMIPFa+KeLeZksqL+6Z0XdGJEIi47aw+edU7GI4pue4o+poxCJNinOpf7gm9Ypp1dwzfPCg9+vkcbiioLIlHArAUeL6/8KYvQ/Y1rmvxEDFImlwngnmGE/gD52G64+T29X6bGk+8OjsfO3u7uyI/NZeiJOAKddVsqsYIc28AqCUL9k8meUB2eIXp49buMs6pvxNmpr4YnhSwfoQdisX8Frm7EsTWooaUo=
+    secure: a+rfnqYweHKLfiqnWlqb82me0DxxJeMDNCQ69n0xNwz3UYmo5S2peKILEKZN9U8u8XP0rKXktpjWma5k69/R3IBdEAJR4QHubZL+91e0hyyebpH2qFBUtxtdfEMfFUqo5P+ueu2ycciUT2lJ9H46ql3rkDkK/36kVROUY4s3mDBzoClBhU6+K64Of95zRwIVaQDQeINUsztWqEy11hktZr7ESrNFUsdxtyMEaTl30PEJ3R658zxvaqoeOuTTWzmtRz5PwawLtz/oeOIt8M1V+BhoERNLe9R+8lCCcaD7ClmxwSUd+Z9PyhIuPo7aGB/dj0SwGpWlqB3FS7v4yOWm9Sealrz3AJBfvdQg8nm3Wa0es7HC2UT+CJphyv+r5K55xaVs7jrGsqBV2aHaqJ5DAGQbxF6kXRaW4Elsd/mlBIGpkGqPwskEjZppleIK+1HpBS3y6Wp6bvbt+04KqcqxxnkokLE0DSF1OCiemnmoYKOgzNGhShqU7WJjS8BvMTHXfAeI5lZH/CuF436tUuFkK8OPNs9eNoo6CShI9fYXtAF+pccSw0+zXCl56qfhrEqTURXvCmcpPNRBdXMKbo5fbgeqnWw0MgIL5suVhGn0a/nt3jO62FB+aj/7KgCrrAiNrHcldS/NAimRLzoIN+6DrYuZ/O1NFI8TVhKTq2Yrr2M=
   skip_cleanup: true
   file_glob: true
   file: "$RELEASE_FILE"
