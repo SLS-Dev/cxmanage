@@ -38,7 +38,7 @@ import shutil
 import tempfile
 
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 
 WORK_DIR = tempfile.mkdtemp(prefix="cxmanage_api-")

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # Copyright (c) 2012-2013, Calxeda Inc.
+# Copyright (c) 2015-2016 Silver Lining Systems, Inc.  All Rights Reserved.
+# Copyright (c) 2015-2016 AtGames Cloud Holdings, Ltd. All Rights Reserved.
 #
 # All rights reserved.
 #
@@ -55,7 +57,7 @@ from cxmanage_api.cli.commands.tspackage import tspackage_command
 from cxmanage_api.cli.commands.eeprom import eepromupdate_command
 
 
-PYIPMI_VERSION = '0.11.0'
+PYIPMI_VERSION = '0.12.0'
 IPMITOOL_VERSION = '1.8.11.0-cx9'
 
 
