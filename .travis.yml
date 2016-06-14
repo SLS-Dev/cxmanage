@@ -30,7 +30,6 @@ deploy:
     all_branches: true
 - provider: pypi
   user: sls.jarvis
-  server: https://testpypi.python.org/pypi
   password:
     secure: I537bpeyLueiQnRUa/ewzsXolZLFXMNaaZ5kE9WhEhfFLbCpsMc0E5+79RhzTCFOoTdaq0BJ2WBM7Kgc6w34RZDWvyQwb6smi2mI9BMGVxipm2rHTkpeJpHsfUlib2HvbGHAukFyNl36GLw9A6v+AKEgPPzicgL/QQVOZEF8BolLBz0f2U8hpg/xzHSox7ib05hyrL2HQD6uBerOBdBoFRYCC4O+B+Tqw7boldrbg49EG/3t8ia+uCGPR9mAVZKOpfM6/6VJyf/FCBFBA7Wnc4D4+eRnuN16qltqsecnYVXKSu3CGc/c42s5YxSlfCBgpr+aqsk+HjUQDq8UhqQpYN9epvsPw3t/AtEP+XpQVUh4BHViiZONZGgjXvy++tBVbTncXO3FwK62Wd7mDBNJMSkCcWgkP0a83fmirGR1lVMqmvYHrsIOTJfAr4AkcuOcdrrXYX0Im2YMIPFa+KeLeZksqL+6Z0XdGJEIi47aw+edU7GI4pue4o+poxCJNinOpf7gm9Ypp1dwzfPCg9+vkcbiioLIlHArAUeL6/8KYvQ/Y1rmvxEDFImlwngnmGE/gD52G64+T29X6bGk+8OjsfO3u7uyI/NZeiJOAKddVsqsYIc28AqCUL9k8meUB2eIXp49buMs6pvxNmpr4YnhSwfoQdisX8Frm7EsTWooaUo=
   skip_cleanup: true
