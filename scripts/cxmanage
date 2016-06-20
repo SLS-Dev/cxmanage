@@ -57,7 +57,7 @@ from cxmanage_api.cli.commands.tspackage import tspackage_command
 from cxmanage_api.cli.commands.eeprom import eepromupdate_command
 
 
-PYIPMI_VERSION = '0.12.0'
+PYIPMI_VERSION = '0.12.1'
 IPMITOOL_VERSION = '1.8.11.0-cx9'
 
 
