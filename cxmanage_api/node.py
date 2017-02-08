@@ -39,7 +39,7 @@ import tempfile
 import socket
 import subprocess
 
-from pkg_resources import parse_version
+from distutils.version import LooseVersion
 from pyipmi import make_bmc, IpmiError
 from pyipmi.bmc import LanBMC as BMC
 from tftpy.TftpShared import TftpException
@@ -1812,8 +1812,8 @@ obtained.
             ecme_version = info.ecme_version.lstrip("v")
             required_version = package.required_socman_version.lstrip("v")
             if ((package.required_socman_version and
-                 parse_version(ecme_version)) <
-                 parse_version(required_version)):
+                 LooseVersion(ecme_version)) <
+                 LooseVersion(required_version)):
                 raise SocmanVersionError(
                         "Update requires socman version %s (found %s)"
                         % (required_version, ecme_version))
